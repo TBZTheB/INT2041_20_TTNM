@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Đăng nhập</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Đăng nhập</h2>
+        <form id="login-form">
+            <input type="text" id="username" placeholder="Tên đăng nhập">
+            <input type="password" id="password" placeholder="Mật khẩu">
+            <button type="submit">Đăng nhập</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Ngăn chặn gửi dữ liệu mặc định của biểu mẫu
+
+            // Lấy giá trị của tên đăng nhập và mật khẩu từ biểu mẫu
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            // Kiểm tra thông tin đăng nhập (ở đây chỉ là một ví dụ đơn giản, thực tế cần phải kiểm tra thông tin đăng nhập với cơ sở dữ liệu hoặc dịch vụ xác thực)
+            if (username === "admin" && password === "123456") {
+                // Nếu thông tin đăng nhập hợp lệ, chuyển hướng đến trang chính
+                window.location.href = "main.html";
+            } else {
+                // Nếu thông tin đăng nhập không hợp lệ, hiển thị cảnh báo
+                alert("Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng thử lại.");
+            }
+        });
+    </script>
+</body>
+</html>
