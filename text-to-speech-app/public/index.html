@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trang web chuyển đổi văn bản thành giọng nói</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e3a0c1;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #d7006b;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(155, 4, 4, 0.826);
+        }
+
+        h1 {
+            text-align: center;
+            color: #000000;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button, .theme-button, .font-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #000000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        button:hover, .theme-button:hover, .font-button:hover {
+            background-color: #45a049;
+        }
+
+        #speech-to-text button {
+            margin-right: 10px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .controls .control-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .bionic-mode {
+            display: none;
+            margin-top: 20px;
+        }
+        .dark-theme {
+            background-color: #121212;
+            color: #ffffff;
+        }
+    
+        .dark-theme .container {
+            background-color: #333333;
+        }
+    
+        .dark-theme textarea {
+            background-color: #555555;
+            color: #ffffff;
+            border: 1px solid #777777;
+        }
+    
+        .dark-theme button, .dark-theme .theme-button, .dark-theme .font-button {
+            background-color: #777777;
+            color: #000000;
+        }
+    
+        .dark-theme button:hover, .dark-theme .theme-button:hover, .dark-theme .font-button:hover {
+            background-color: #999999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Trang web chuyển đổi văn bản thành giọng nói</h1>
+
+        <div class="controls">
+            <div class="control-item">
+                <button class="theme-button" onclick="toggleTheme()">Đổi theme</button>
+            </div>
+            <div class="control-item">
+                <button class="font-button" onclick="decreaseFontSize()">A-</button>
+                <button class="font-button" onclick="increaseFontSize()">A+</button>
+            </div>
+            <div class="control-item">
+                <button class="font-button" onclick="toggleBionicMode()">Bionic Mode</button>
+            </div>
+        </div>
+
+        <textarea id="text-to-speech" placeholder="Nhập văn bản cần chuyển đổi"></textarea>
+        <button onclick="textToSpeech()">Chuyển đổi thành giọng nói</button>
+        <button onclick="pauseSpeech()">Dừng đọc</button>
+        <button onclick="resumeSpeech()">Tiếp tục đọc</button>
+        
+        <br><br>
+
+        <div>
+            <input type="file" id="text-file-input" accept=".txt">
+            <button onclick="uploadTextFile()">Upload File Text</button>
+        </div>
+
+        <br><br>
+
+        <div>
+            <input type="file" id="audio-file-input" accept="audio/*">
+            <button onclick="uploadAudioFile()">Upload File Audio</button>
+        </div>
+
+        <br><br>
+
+        <div id="speech-to-text">
+            <button onclick="startSpeechToText()">Bắt đầu nghe</button>
+            <button onclick="stopSpeechToText()">Dừng nghe</button>
+        </div>
+
+        <div class="bionic-mode" id="bionic-text"></div>
+    </div>
+
+    <script>
+        let synth = window.speechSynthesis;
+        let utterance;
+
+        // Chuyển đổi văn bản thành giọng nói
+        function textToSpeech() {
+            let text = document.getElementById("text-to-speech").value;
+            utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "vi-VN";
+            synth.speak(utterance);
+        }
+
+        // Dừng đọc
+        function pauseSpeech() {
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+            }
+        }
+
+        // Tiếp tục đọc
+        function resumeSpeech() {
+            if (synth.paused) {
+                synth.resume();
+            }
+        }
+
+        // Chuyển đổi giọng nói thành văn bản
+        function startSpeechToText() {
+            var recognition = new webkitSpeechRecognition();
+            recognition.lang = "vi-VN";
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                var text = event.results[0][0].transcript;
+                document.getElementById("text-to-speech").value = text;
+            }
+        }
+
+        // Dừng nghe giọng nói
+        function stopSpeechToText() {
+            recognition.stop();
+        }
+
+        // Đổi theme
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+        }
+
+        // Thay đổi kích thước font chữ
+        function changeFontSize(delta) {
+            const textArea = document.getElementById('text-to-speech');
+            const currentSize = parseFloat(window.getComputedStyle(textArea, null).getPropertyValue('font-size'));
+            textArea.style.fontSize = (currentSize + delta) + 'px';
+        }
+
+        function increaseFontSize() {
+            changeFontSize(2);
+        }
+
+        function decreaseFontSize() {
+            changeFontSize(-2);
+        }
+
+        // Bionic Reading Mode
+        function toggleBionicMode() {
+            const textArea = document.getElementById('text-to-speech');
+            const bionicText = document.getElementById('bionic-text');
+            if (bionicText.style.display === 'none') {
+                const text = textArea.value;
+                bionicText.innerHTML = applyBionicReading(text);
+                bionicText.style.display = 'block';
+                textArea.style.display = 'none';
+            } else {
+                bionicText.style.display = 'none';
+                textArea.style.display = 'block';
+            }
+        }
+
+        function applyBionicReading(text) {
+            return text.split(' ').map(word => {
+                const mid = Math.ceil(word.length / 2);
+                return `<b>${word.slice(0, mid)}</b>${word.slice(mid)}`;
+            }).join(' ');
+        }
+
+        // Upload File Text
+        function uploadTextFile() {
+            const input = document.getElementById('text-file-input');
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('text-to-speech').value = e.target.result;
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Upload File Audio
+        function uploadAudioFile() {
+            const input = document.getElementById('audio-file-input');
+            const file = input.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('audio', file);
+
+                fetch('/upload-audio', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('text-to-speech').value = data.transcript;
+                })
+                .catch(error => {
+                    console.error('Error uploading audio file:', error);
+                });
+            }
+        }
+
+    </script>
+</body>
+</html>
