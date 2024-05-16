@@ -68,15 +68,15 @@ app.post('/register', (req, res) => {
 // Endpoint cho trang đăng nhập
 // app.post('/login', (req, res) => {
 //     const { username, password } = req.body;
-//     db.get("SELECT * FROM users WHERE username = ? AND password = ?", [username, password], (err, row) => {
-//         if (err) {
-//             return res.status(500).send("Error logging in");
-//         }
-//         if (!row) {
-//             return res.status(400).send("Invalid credentials");
-//         }
-//         res.redirect('/index.html');
-//     });
+    // db.get("SELECT * FROM users WHERE username = ? AND password = ?", [username, password], (err, row) => {
+    //     if (err) {
+    //         return res.status(500).send("Error logging in");
+    //     }
+    //     if (!row) {
+    //         return res.status(400).send("Invalid credentials");
+    //     }
+    //     res.redirect('/index.html');
+    // });
 // });
 
 
@@ -90,14 +90,14 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
-        if (err) throw err;
-        if (user && user.password === password) {
-            req.session.userId = user.id;
-            res.redirect('/');
-        } else {
-            res.send('Invalid username or password');
+    db.get("SELECT * FROM users WHERE username = ? AND password = ?", [username, password], (err, row) => {
+        if (err) {
+            return res.status(500).send("Error logging in");
         }
+        if (!row) {
+            return res.status(400).send("Invalid credentials");
+        }
+        res.redirect('/index.html');
     });
 });
 
