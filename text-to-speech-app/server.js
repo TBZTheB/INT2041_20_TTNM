@@ -57,12 +57,12 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-const { username, password } = req.body;
-db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, password], function(err) {
-    if (err) throw err;
-    req.session.userId = this.lastID;
-    res.redirect('/');
-});
+    const { username, password } = req.body;
+    db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, password], function(err) {
+        if (err) throw err;
+        req.session.userId = this.lastID;
+        res.redirect('/');
+    });
 });
 
 // Endpoint cho trang đăng nhập
@@ -81,19 +81,24 @@ db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, passwo
 
 
 app.get('/login', (req, res) => {
-    res.sendFile(__dirname + '/public/login.html');
-});
+    if (req.session.userId) {
+      res.redirect('/');
+    } else {
+      res.sendFile(__dirname + '/public/login.html');
+    }
+  });
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
-        if (err) throw err;
-        if (user && user.password === password) {
-            req.session.userId = user.id;
-            res.redirect('/');
-        } else {
-            res.send('Invalid username or password');
+    db.get("SELECT * FROM users WHERE username = ? AND password = ?", [username, password], (err, row) => {
+        if (err) {
+            return res.status(500).send("Error logging in");
         }
+        if (!row) {
+            return res.status(400).send("Invalid credentials");
+        }
+        req.session.userId = this.lastId;
+        res.redirect('/index.html');
     });
 });
 

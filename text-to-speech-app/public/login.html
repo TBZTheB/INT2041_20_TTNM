@@ -55,6 +55,12 @@
         }
     </style>
 </head>
+<script>
+    //Prevent default to fix a login bug
+    $("#prospects_form").submit(function(e) {
+        e.preventDefault();
+    });
+</script>
 <body>
     <div class="container">
         <h1>Đăng nhập</h1>
