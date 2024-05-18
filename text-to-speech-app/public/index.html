@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Trang web chuyển đổi văn bản thành giọng nói</title>
+    <title>Text to Speech Coversion</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Lexend", sans-serif;
             background-color: #e3a0c1;
             margin: 0;
             padding: 0;
@@ -24,12 +25,18 @@
             color: #000000;
         }
 
+        h2 {
+            text-align: center;
+            color: #000000;
+        }
+
         textarea {
             width: 100%;
             height: 150px;
             margin-bottom: 20px;
             padding: 10px;
             font-size: 16px;
+            font-family: inherit;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
@@ -37,6 +44,7 @@
         button, .theme-button, .font-button {
             padding: 10px 20px;
             font-size: 16px;
+            font-family: inherit;
             cursor: pointer;
             background-color: #000000;
             color: #fff;
@@ -95,45 +103,48 @@
 </head>
 <body>
     <div class="container">
-        <h1>Trang web chuyển đổi văn bản thành giọng nói</h1>
-
+        <h1>Text to Speech Conversion</h1>
+        <h2>Website for the blind</h2>
         <div class="controls">
             <div class="control-item">
-                <button class="theme-button" onclick="toggleTheme()">Đổi theme</button>
+                <button class="theme-button" onclick="toggleTheme()" accesskey="T">Change Theme <br>(Alt + T)</button>
             </div>
             <div class="control-item">
-                <button class="font-button" onclick="decreaseFontSize()">A-</button>
-                <button class="font-button" onclick="increaseFontSize()">A+</button>
+                <button class="font-button" onclick="decreaseFontSize()" accesskey="G">A- (Alt + G)</button>
+                <button class="font-button" onclick="increaseFontSize()" accesskey="I">A+ (Alt + I)</button>
             </div>
             <div class="control-item">
-                <button class="font-button" onclick="toggleBionicMode()">Bionic Mode</button>
+                <button class="font-button" onclick="toggleBionicMode()" accesskey="B">Bionic Mode (Alt + B)</button>
+            </div>
+            <div class="control-item">
+                <button><a href="/login.html" accesskey="L">Logout<br>(Alt + L)</a></button>
             </div>
         </div>
 
-        <textarea id="text-to-speech" placeholder="Nhập văn bản cần chuyển đổi"></textarea>
-        <button onclick="textToSpeech()">Chuyển đổi thành giọng nói</button>
-        <button onclick="pauseSpeech()">Dừng đọc</button>
-        <button onclick="resumeSpeech()">Tiếp tục đọc</button>
+        <textarea id="text-to-speech" placeholder="Enter text to convert"></textarea>
+        <button onclick="textToSpeech()" accesskey="C">Convert to Speech (Alt + C)</button>
+        <button onclick="pauseSpeech()" accesskey="P">Pause (Alt + P)</button>
+        <button onclick="resumeSpeech()" accesskey="R">Resume (Alt + R)</button>
         
         <br><br>
 
         <div>
             <input type="file" id="text-file-input" accept=".txt">
-            <button onclick="uploadTextFile()">Upload File Text</button>
+            <button onclick="uploadTextFile()" accesskey="U">Upload Text File (Alt + U)</button>
         </div>
 
         <br><br>
 
         <div>
             <input type="file" id="audio-file-input" accept="audio/*">
-            <button onclick="uploadAudioFile()">Upload File Audio</button>
+            <button onclick="uploadAudioFile()" accesskey="A">Upload Audio File (Alt + A)</button>
         </div>
 
         <br><br>
 
         <div id="speech-to-text">
-            <button onclick="startSpeechToText()">Bắt đầu nghe</button>
-            <button onclick="stopSpeechToText()">Dừng nghe</button>
+            <button onclick="startSpeechToText()" accesskey="S">Start Listening (Alt + S)</button>
+            <button onclick="stopSpeechToText()" accesskey="O">Stop Listening (Alt + O)</button>
         </div>
 
         <div class="bionic-mode" id="bionic-text"></div>
@@ -143,32 +154,32 @@
         let synth = window.speechSynthesis;
         let utterance;
 
-        // Chuyển đổi văn bản thành giọng nói
+        // Convery text to speech
         function textToSpeech() {
             let text = document.getElementById("text-to-speech").value;
             utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "vi-VN";
+            utterance.lang = "en-US";
             synth.speak(utterance);
         }
 
-        // Dừng đọc
+        // Pause speech
         function pauseSpeech() {
             if (synth.speaking && !synth.paused) {
                 synth.pause();
             }
         }
 
-        // Tiếp tục đọc
+        // Resume speech
         function resumeSpeech() {
             if (synth.paused) {
                 synth.resume();
             }
         }
 
-        // Chuyển đổi giọng nói thành văn bản
+        // Convert speech to text
         function startSpeechToText() {
             var recognition = new webkitSpeechRecognition();
-            recognition.lang = "vi-VN";
+            recognition.lang = "en-US";
             recognition.start();
 
             recognition.onresult = function(event) {
@@ -177,17 +188,17 @@
             }
         }
 
-        // Dừng nghe giọng nói
+        // Stop listening
         function stopSpeechToText() {
             recognition.stop();
         }
 
-        // Đổi theme
+        // Change theme
         function toggleTheme() {
             document.body.classList.toggle('dark-theme');
         }
 
-        // Thay đổi kích thước font chữ
+        // Change font size
         function changeFontSize(delta) {
             const textArea = document.getElementById('text-to-speech');
             const currentSize = parseFloat(window.getComputedStyle(textArea, null).getPropertyValue('font-size'));
