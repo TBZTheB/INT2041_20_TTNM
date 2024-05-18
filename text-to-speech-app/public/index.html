@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Text to Speech Conersion</title>
+    <title>Text to Speech Coversion</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Lexend", sans-serif;
             background-color: #e3a0c1;
             margin: 0;
             padding: 0;
@@ -35,6 +36,7 @@
             margin-bottom: 20px;
             padding: 10px;
             font-size: 16px;
+            font-family: inherit;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
@@ -42,6 +44,7 @@
         button, .theme-button, .font-button {
             padding: 10px 20px;
             font-size: 16px;
+            font-family: inherit;
             cursor: pointer;
             background-color: #000000;
             color: #fff;
@@ -104,41 +107,44 @@
         <h2>Website for the blind</h2>
         <div class="controls">
             <div class="control-item">
-                <button class="theme-button" onclick="toggleTheme()">Change  theme</button>
+                <button class="theme-button" onclick="toggleTheme()" accesskey="T">Change Theme <br>(Alt + T)</button>
             </div>
             <div class="control-item">
-                <button class="font-button" onclick="decreaseFontSize()">A-</button>
-                <button class="font-button" onclick="increaseFontSize()">A+</button>
+                <button class="font-button" onclick="decreaseFontSize()" accesskey="G">A- (Alt + G)</button>
+                <button class="font-button" onclick="increaseFontSize()" accesskey="I">A+ (Alt + I)</button>
             </div>
             <div class="control-item">
-                <button class="font-button" onclick="toggleBionicMode()">Bionic Mode</button>
+                <button class="font-button" onclick="toggleBionicMode()" accesskey="B">Bionic Mode (Alt + B)</button>
+            </div>
+            <div class="control-item">
+                <button><a href="/login.html" accesskey="L">Logout<br>(Alt + L)</a></button>
             </div>
         </div>
 
         <textarea id="text-to-speech" placeholder="Enter text to convert"></textarea>
-        <button onclick="textToSpeech()">Convert to Speech</button>
-        <button onclick="pauseSpeech()">Pause</button>
-        <button onclick="resumeSpeech()">Resume</button>
+        <button onclick="textToSpeech()" accesskey="C">Convert to Speech (Alt + C)</button>
+        <button onclick="pauseSpeech()" accesskey="P">Pause (Alt + P)</button>
+        <button onclick="resumeSpeech()" accesskey="R">Resume (Alt + R)</button>
         
         <br><br>
 
         <div>
             <input type="file" id="text-file-input" accept=".txt">
-            <button onclick="uploadTextFile()">Upload File Text</button>
+            <button onclick="uploadTextFile()" accesskey="U">Upload Text File (Alt + U)</button>
         </div>
 
         <br><br>
 
         <div>
             <input type="file" id="audio-file-input" accept="audio/*">
-            <button onclick="uploadAudioFile()">Upload File Audio</button>
+            <button onclick="uploadAudioFile()" accesskey="A">Upload Audio File (Alt + A)</button>
         </div>
 
         <br><br>
 
         <div id="speech-to-text">
-            <button onclick="startSpeechToText()">Start Listening</button>
-            <button onclick="stopSpeechToText()">Stop Listening</button>
+            <button onclick="startSpeechToText()" accesskey="S">Start Listening (Alt + S)</button>
+            <button onclick="stopSpeechToText()" accesskey="O">Stop Listening (Alt + O)</button>
         </div>
 
         <div class="bionic-mode" id="bionic-text"></div>
@@ -163,7 +169,7 @@
             }
         }
 
-        // Resume spee
+        // Resume speech
         function resumeSpeech() {
             if (synth.paused) {
                 synth.resume();
