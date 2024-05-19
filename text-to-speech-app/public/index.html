@@ -141,11 +141,12 @@
         <button onclick="textToSpeech()" accesskey="C">Convert to Speech (Alt + C)</button>
         <button onclick="pauseSpeech()" accesskey="P">Pause (Alt + P)</button>
         <button onclick="resumeSpeech()" accesskey="R">Resume (Alt + R)</button>
+        <button onclick="summarizeText()" accesskey="M">Summarize (Alt + M)</button>
         
         <br><br>
 
         <div>
-            <input type="file" id="text-file-input" accept=".txt" style="display: none;" onchange="uploadTextFile(event)"/>
+            <input type="file" id="text-file-input" accept=".txt,application/pdf" style="display: none;" onchange="uploadTextFile(event)"/>
             <button onclick="triggerFileUpload()" accesskey="U" >Upload Text File (Alt + U)</button>
         </div>
 
@@ -165,6 +166,10 @@
 
         <div class="bionic-mode" id="bionic-text"></div>
     </div>
+
+    <!--  Libaries for reading pdfs  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js"></script>
 
     <script>
         let synth = window.speechSynthesis;
@@ -262,15 +267,58 @@
             //input.click();
             //const file = document.getElementById('text-file-input').files[0];
             const file = e.target.files[0];
-            if (file) {
+            const fileType = file.type;
+            if (file && fileType === 'text/plain') {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('text-to-speech').value = e.target.result;
                 };
                 reader.readAsText(file);
+            }else{
+                readPdfFile(file)
             }
         }
+        //Function to read PDFs
+        async function readPdfFile(file) {
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const arrayBuffer = e.target.result;
 
+                const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+                let textContent = '';
+
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const text = await page.getTextContent();
+                    const pageText = text.items.map(item => item.str).join('');
+                    textContent += pageText + '\n';
+                }
+
+                document.getElementById('text-to-speech').value = textContent;
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        async function summarizeText() {
+           const text = document.getElementById('text-to-speech').value;
+           const response = await fetch('/summarize', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({ text })
+           });
+           try {
+               if (!response.ok) {
+                   throw new Error('Failed to summarize text');
+               }
+               const data = await response.json();
+               document.getElementById('text-to-speech').value = data.summary;
+           } catch (error) {
+               console.error('Error:', error.message);
+               document.getElementById('text-to-speech').value = 'Error: ' + error.message;
+           }
+       }
        
 
     </script>
