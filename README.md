@@ -82,6 +82,10 @@ Sau khi nhấn `Upload Text File` hoặc (Alt + U) văn bản của file .txt, p
 
 ![alt text](image-16.png)
 
+## Tóm tắt văn bản được viết/upload lên
+1. Điền hoặc upload văn bản vào hộp text.
+2. Nhấn `Summarize` hoặc (Alt + M) để tóm tắt văn bản
+
 ## Thay đổi giao diện sáng tối
 
 Nhấn `Change Theme` hoặc (Alt + T) để thay đổi giao diện
