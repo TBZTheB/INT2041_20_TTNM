@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Text to Speech Coversion</title>
+    <title>Text to Speech Conversion</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+        /*@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap');*/
+
         body {
-            font-family: "Lexend", sans-serif;
+            font-family: "Lexend",  sans-serif;
             background-color: #e3a0c1;
             margin: 0;
             padding: 0;
+            font-size: 16px;
         }
 
         .container {
             max-width: 600px;
             margin: 50px auto;
-            background-color: #d7006b;
+            /*background-color: #d7006b;*/
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(155, 4, 4, 0.826);
+            /*box-shadow: 0 0 10px rgba(155, 4, 4, 0.826);*/
         }
 
         h1 {
             text-align: center;
-            color: #000000;
+            
         }
 
         h2 {
             text-align: center;
-            color: #000000;
+            
         }
 
         textarea {
@@ -54,7 +57,12 @@
         }
 
         button:hover, .theme-button:hover, .font-button:hover {
-            background-color: #45a049;
+            background-color: #387f3b;
+        }
+
+        button:active {
+            /*outline: 2px solid black;*/
+            outline: 2px solid #fff;
         }
 
         #speech-to-text button {
@@ -76,35 +84,42 @@
             display: none;
             margin-top: 20px;
         }
+        #logout {
+            color: inherit;
+            text-decoration: none;
+        }
+
         .dark-theme {
             background-color: #121212;
             color: #ffffff;
         }
     
         .dark-theme .container {
-            background-color: #333333;
+            /*background-color: #333333;*/
+            color: white;
         }
     
         .dark-theme textarea {
-            background-color: #555555;
+            background-color: #606060;
             color: #ffffff;
             border: 1px solid #777777;
         }
     
         .dark-theme button, .dark-theme .theme-button, .dark-theme .font-button {
-            background-color: #777777;
+            background-color: #999999;
             color: #000000;
         }
     
         .dark-theme button:hover, .dark-theme .theme-button:hover, .dark-theme .font-button:hover {
-            background-color: #999999;
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Text to Speech Conversion</h1>
+        <h1>Text - Speech Conversion</h1>
         <h2>Website for the blind</h2>
+        
         <div class="controls">
             <div class="control-item">
                 <button class="theme-button" onclick="toggleTheme()" accesskey="T">Change Theme <br>(Alt + T)</button>
@@ -117,11 +132,12 @@
                 <button class="font-button" onclick="toggleBionicMode()" accesskey="B">Bionic Mode (Alt + B)</button>
             </div>
             <div class="control-item">
-                <button><a href="/login.html" accesskey="L">Logout<br>(Alt + L)</a></button>
+                <button class="logout-button"><a id="logout" href="/login.html" accesskey="L">Logout<br>(Alt + L)</a></button>
             </div>
         </div>
 
         <textarea id="text-to-speech" placeholder="Enter text to convert"></textarea>
+        
         <button onclick="textToSpeech()" accesskey="C">Convert to Speech (Alt + C)</button>
         <button onclick="pauseSpeech()" accesskey="P">Pause (Alt + P)</button>
         <button onclick="resumeSpeech()" accesskey="R">Resume (Alt + R)</button>
@@ -129,16 +145,16 @@
         <br><br>
 
         <div>
-            <input type="file" id="text-file-input" accept=".txt">
-            <button onclick="uploadTextFile()" accesskey="U">Upload Text File (Alt + U)</button>
+            <input type="file" id="text-file-input" accept=".txt" style="display: none;" onchange="uploadTextFile(event)"/>
+            <button onclick="triggerFileUpload()" accesskey="U" >Upload Text File (Alt + U)</button>
         </div>
 
         <br><br>
 
-        <div>
+        <!--<div>
             <input type="file" id="audio-file-input" accept="audio/*">
             <button onclick="uploadAudioFile()" accesskey="A">Upload Audio File (Alt + A)</button>
-        </div>
+        </div>-->
 
         <br><br>
 
@@ -236,9 +252,16 @@
         }
 
         // Upload File Text
-        function uploadTextFile() {
-            const input = document.getElementById('text-file-input');
-            const file = input.files[0];
+        function triggerFileUpload (){
+            document.getElementById('text-file-input').click();
+        }
+
+        function uploadTextFile(e) {
+            //document.getElementById('text-file-input').click();
+            //const input = document.getElementById('text-file-input');
+            //input.click();
+            //const file = document.getElementById('text-file-input').files[0];
+            const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -248,27 +271,7 @@
             }
         }
 
-        // Upload File Audio
-        function uploadAudioFile() {
-            const input = document.getElementById('audio-file-input');
-            const file = input.files[0];
-            if (file) {
-                const formData = new FormData();
-                formData.append('audio', file);
-
-                fetch('/upload-audio', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('text-to-speech').value = data.transcript;
-                })
-                .catch(error => {
-                    console.error('Error uploading audio file:', error);
-                });
-            }
-        }
+       
 
     </script>
 </body>
