@@ -141,6 +141,7 @@
         <button onclick="textToSpeech()" accesskey="C">Convert to Speech (Alt + C)</button>
         <button onclick="pauseSpeech()" accesskey="P">Pause (Alt + P)</button>
         <button onclick="resumeSpeech()" accesskey="R">Resume (Alt + R)</button>
+        <button onclick="summarizeText()" accesskey="M">Summarize (Alt + M)</button>
         
         <br><br>
 
@@ -298,6 +299,26 @@
             reader.readAsArrayBuffer(file);
         }
 
+        async function summarizeText() {
+           const text = document.getElementById('text-to-speech').value;
+           const response = await fetch('/summarize', {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({ text })
+           });
+           try {
+               if (!response.ok) {
+                   throw new Error('Failed to summarize text');
+               }
+               const data = await response.json();
+               document.getElementById('text-to-speech').value = data.summary;
+           } catch (error) {
+               console.error('Error:', error.message);
+               document.getElementById('text-to-speech').value = 'Error: ' + error.message;
+           }
+       }
        
 
     </script>

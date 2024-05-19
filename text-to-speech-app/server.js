@@ -5,6 +5,7 @@ const { SpeechClient } = require('@google-cloud/speech');
 const fs = require('fs');
 const path = require('path');
 const db = require('./database');
+const axios = require('axios');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -69,6 +70,35 @@ app.post('/upload-audio', upload.single('audio'), async (req, res) => {
         res.status(500).send("Error transcribing audio");
     } finally {
         fs.unlinkSync(filePath); // Xóa tệp sau khi xử lý
+    }
+});
+
+app.post('/summarize', async (req, res) => {
+    const { text } = req.body;
+    if (!text) {
+        return res.status(400).json({ error: 'No text provided' });
+    }
+
+    try {
+        const response = await axios.post(
+            'https://api-inference.huggingface.co/models/google/flan-t5-xxl',
+            { inputs: text },
+            {
+                headers: {
+                    'Authorization': `Bearer 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`,
+                    'Content-Type': 'application/json'
+                },
+                params: {
+                    max_length: 500, // Adjust max length of summary
+                }
+            }
+        );
+        const summary = response.data[0]?.generated_text || response.data?.generated_text || "Summary not found in response";
+        
+        res.json({ summary });
+    } catch (error) {
+        console.error('Error during summarization:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Failed to summarize text' });
     }
 });
 
