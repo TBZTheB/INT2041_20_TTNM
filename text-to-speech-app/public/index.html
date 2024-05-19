@@ -60,6 +60,11 @@
             background-color: #387f3b;
         }
 
+        button:active {
+            /*outline: 2px solid black;*/
+            outline: 2px solid #fff;
+        }
+
         #speech-to-text button {
             margin-right: 10px;
         }
@@ -132,6 +137,7 @@
         </div>
 
         <textarea id="text-to-speech" placeholder="Enter text to convert"></textarea>
+        
         <button onclick="textToSpeech()" accesskey="C">Convert to Speech (Alt + C)</button>
         <button onclick="pauseSpeech()" accesskey="P">Pause (Alt + P)</button>
         <button onclick="resumeSpeech()" accesskey="R">Resume (Alt + R)</button>
