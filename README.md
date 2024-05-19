@@ -46,6 +46,8 @@ Cài đặt các gói SQLite, multer và speech-to-text
 
 `Alt + R`: Resume
 
+`Alt + M`: Summarize
+
 `Alt + U`: Upload Text File
 
 `Alt + A`: Upload Audio File
@@ -83,6 +85,7 @@ Sau khi nhấn `Upload Text File` hoặc (Alt + U) văn bản của file .txt, p
 ![alt text](image-16.png)
 
 ## Tóm tắt văn bản được viết/upload lên
+![summarize button](image-22.png)
 1. Điền hoặc upload văn bản vào hộp text.
 2. Nhấn `Summarize` hoặc (Alt + M) để tóm tắt văn bản
 
