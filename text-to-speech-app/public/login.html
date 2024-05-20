@@ -49,17 +49,54 @@
         button:hover {
             background-color: #45a049;
         }
+        #errorMessage{
+            color: rgb(255, 0, 0);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form action="/login" method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+        <form id="loginForm">
+            <div id="errorMessage" class="error"></div>
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
             <p>Do not have an account?<a href="/register.html"> Registered here</a></p>
         </form>
     </div>
 </body>
+
+<script>
+    //Method to post login and collect errors from the server
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // Prevent the form from submitting the traditional way
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorMessageDiv = document.getElementById('errorMessage');
+
+        // Clear any previous error message
+        errorMessageDiv.textContent = '';
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText);
+            }
+            window.location.href = '/index.html';
+        } catch (error) {
+            // Display the error message
+            errorMessageDiv.textContent = error.message;
+        }
+    }); 
+</script>
 </html>
